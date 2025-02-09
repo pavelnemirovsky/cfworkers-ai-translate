@@ -23,6 +23,7 @@ export default {
             return new Response(JSON.stringify(response["translated_text"]), {
                 headers: { 'Content-Type': 'application/json' },
             });
+
         }
 
         return new Response('Not found', { status: 404 });
