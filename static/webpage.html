@@ -86,6 +86,7 @@
     <div class="container">
         <h1>Multi-modal Translation w/ Cloudflare</h1>
         <textarea id="langInput" placeholder="Enter target language (e.g., 'es' for Spanish)"></textarea>
+        <textarea id="sourceLangInput" placeholder="Enter source language (e.g., 'en' for English)"></textarea>
         <textarea id="textInput" placeholder="Enter text to translate or click Record Voice"></textarea>
         <button id="translateButton">Translate</button>
         <button id="recordButton">Record Voice</button>
@@ -109,14 +110,15 @@
         document.getElementById('translateButton').onclick = async function() {
             const text = document.getElementById('textInput').value;
             const targetLang = document.getElementById('langInput').value;
-            if (text.trim() === "" || targetLang.trim() === "") {
-                alert("Please enter both text and target language.");
+            const sourceLang = document.getElementById('sourceLangInput').value;
+            if (text.trim() === "" || targetLang.trim() === "" || sourceLang.trim() === "") {
+                alert("Please enter text, source language, and target language.");
                 return;
             }
             const response = await fetch('/translate', {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ text, targetLang })
+                body: JSON.stringify({ text, targetLang, sourceLang })
             });
             const res = await response.json();
             let str_res = JSON.stringify(res);
@@ -144,14 +146,15 @@
             recognition.onresult = async function(event) {
                 const transcript = event.results[0][0].transcript;
                 const targetLang = document.getElementById('langInput').value;
-                if (targetLang.trim() === "") {
-                    alert("Please enter the target language.");
+                const sourceLang = document.getElementById('sourceLangInput').value;
+                if (targetLang.trim() === "" || sourceLang.trim() === "") {
+                    alert("Please enter both source and target languages.");
                     return;
                 }
                 const response = await fetch('/translate', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ text:transcript, targetLang })
+                    body: JSON.stringify({ text: transcript, targetLang, sourceLang })
                 });
                 const res = await response.json();
                 document.getElementById('translationResult').innerText = `${transcript}: ${JSON.stringify(res)}`;

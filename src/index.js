@@ -9,10 +9,10 @@ export default {
                 headers: { 'Content-Type': 'text/html' },
             });
         } else if (request.method === 'POST' && url.pathname === '/translate') {
-            const { text, targetLang } = await request.json();
+            const { text, targetLang, sourceLang } = await request.json();
             const input = {
                 "text": text,
-                "source_lang": "english",
+                "source_lang": sourceLang,
                 "target_lang": targetLang
             };
             const response = await env.AI.run(
@@ -23,7 +23,6 @@ export default {
             return new Response(JSON.stringify(response["translated_text"]), {
                 headers: { 'Content-Type': 'application/json' },
             });
-
         }
 
         return new Response('Not found', { status: 404 });
